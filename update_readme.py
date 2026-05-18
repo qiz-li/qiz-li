@@ -1,79 +1,112 @@
 import json
-import requests
+import os
+import urllib.request
+
+USER = "qiz-li"
+
+QUERY = """
+query($login: String!, $cursor: String) {
+  user(login: $login) {
+    repositories(
+      first: 100
+      after: $cursor
+      isFork: false
+      ownerAffiliations: OWNER
+    ) {
+      pageInfo { hasNextPage endCursor }
+      nodes {
+        languages(first: 20, orderBy: {field: SIZE, direction: DESC}) {
+          edges { size node { name color } }
+        }
+      }
+    }
+  }
+}
+"""
 
 
-def main():
-    """Pulls languages data from GitHub and returns percentages and bar.
+def graphql(token, query, variables):
+    data = json.dumps({"query": query, "variables": variables}).encode()
+    req = urllib.request.Request(
+        "https://api.github.com/graphql",
+        data=data,
+        headers={
+            "Authorization": f"bearer {token}",
+            "Content-Type": "application/json",
+        },
+    )
+    with urllib.request.urlopen(req) as resp:
+        return json.loads(resp.read())
 
-    Returns:
-        tuple: Tuple of languages percentages and bar.
-    """
 
-    # Please change to your username
-    usr = 'qiz-li'
-
+def fetch_languages(token):
     langs = {}
+    cursor = None
 
-    # Retrieve repo names
-    try:
-        repos = [repo["name"] for repo in
-                 requests.get(
-                     url=f'https://api.github.com/users/{usr}/repos').json()
-                 # Remove this to include forks
-                 if not repo["fork"]]
-    except TypeError:
-        print("Error: Hmm, it appears that you don't have any repos?\n"
-              "If you do, check your username and try again.")
-        exit(1)
+    while True:
+        result = graphql(token, QUERY, {"login": USER, "cursor": cursor})
+        repos = result["data"]["user"]["repositories"]
 
-    # GitHub official language colors
-    with open('colors.json', 'r') as file:
-        colors = json.load(file)
+        for repo in repos["nodes"]:
+            for edge in repo["languages"]["edges"]:
+                name = edge["node"]["name"]
+                color = edge["node"]["color"]
+                langs.setdefault(name, {"bytes": 0, "color": color})
+                langs[name]["bytes"] += edge["size"]
 
-    # Adding all languages from all user repos
-    for repo in repos:
-        repo_lang = requests.get(
-            url=f'https://api.github.com/repos/{usr}/{repo}/languages').json()
-        for lang, val in repo_lang.items():
-            if lang in langs:
-                langs[lang] += val
-            else:
-                langs[lang] = val
-    total = sum(langs.values())
+        if not repos["pageInfo"]["hasNextPage"]:
+            break
+        cursor = repos["pageInfo"]["endCursor"]
 
-    # Initial formatting
-    yaml = '``` yaml\nTop languages:\n'
-    bar = ('''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 6" height="6">
-  <defs>
-    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">\n''')
+    return langs
+
+
+def build_output(langs):
+    total = sum(v["bytes"] for v in langs.values())
+    sorted_langs = sorted(langs.items(), key=lambda x: x[1]["bytes"], reverse=True)
+
+    yaml = "``` yaml\nTop languages:\n"
+    bar = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 6" height="6">\n'
+        "  <defs>\n"
+        '    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">\n'
+    )
 
     start = 0
-    # Parse data into percentages and bar
-    for lang, val in dict(sorted(langs.items(),
-                                 key=lambda item: item[1],
-                                 reverse=True)).items():
-        percent = val / total * 100
-        yaml += f'  - {lang} {round(percent, 1) if int(percent) == 0 else int(percent)}%\n'
-        # Use percentage to construct a svg bar with language color
-        bar += (
-            f'''        <stop offset="{start}%" stop-color="{colors[lang]["color"]}" />
-        <stop offset="{start + percent}%" stop-color="{colors[lang]["color"]}" />\n''')
+    for lang, data in sorted_langs:
+        percent = data["bytes"] / total * 100
+        display = f"{round(percent, 1)}%" if int(percent) == 0 else f"{int(percent)}%"
+        yaml += f"  - {lang} {display}\n"
+
+        color = data["color"] or "#ccc"
+        bar += f'        <stop offset="{start}%" stop-color="{color}" />\n'
+        bar += f'        <stop offset="{start + percent}%" stop-color="{color}" />\n'
         start += percent
 
-    # File end formatting
-    yaml += ('```\n\n[![Languages bar](bar.svg)]'
-             f'(https://github.com/search?q=user%3A{usr}&type=code)\n')
-    bar += '''    </linearGradient>
-  </defs>
-  <rect x="0" y="0" width="100%" height="6px" fill="url(#gradient)" rx="1.5" />
-</svg>'''
+    yaml += f"```\n\n[![Languages bar](bar.svg)](https://github.com/search?q=user%3A{USER}&type=code)\n"
+    bar += "    </linearGradient>\n  </defs>\n"
+    bar += '  <rect x="0" y="0" width="100%" height="6px" fill="url(#gradient)" rx="1.5" />\n'
+    bar += "</svg>"
 
     return yaml, bar
 
 
-if __name__ == '__main__':
-    yaml, bar = main()
-    with open('README.md', 'w') as file:
-        file.write(yaml)
-    with open('bar.svg', 'w') as file:
-        file.write(bar)
+if __name__ == "__main__":
+    token = os.environ.get("GITHUB_TOKEN")
+    if not token:
+        print("Error: GITHUB_TOKEN environment variable is required.")
+        exit(1)
+
+    langs = fetch_languages(token)
+    if not langs:
+        print("Error: No language data found.")
+        exit(1)
+
+    yaml, bar = build_output(langs)
+
+    with open("README.md", "w") as f:
+        f.write(yaml)
+    with open("bar.svg", "w") as f:
+        f.write(bar)
+
+    print(f"Updated with {len(langs)} languages from user '{USER}'.")
