@@ -64,6 +64,7 @@ def fetch_languages(token):
 def build_output(langs):
     total = sum(v["bytes"] for v in langs.values())
     sorted_langs = sorted(langs.items(), key=lambda x: x[1]["bytes"], reverse=True)
+    filtered = [(l, d, d["bytes"] / total * 100) for l, d in sorted_langs if d["bytes"] / total >= 0.01]
 
     yaml = "``` yaml\nTop languages:\n"
     bar = (
@@ -73,10 +74,8 @@ def build_output(langs):
     )
 
     start = 0
-    for lang, data in sorted_langs:
-        percent = data["bytes"] / total * 100
-        display = f"{round(percent, 1)}%" if int(percent) == 0 else f"{int(percent)}%"
-        yaml += f"  - {lang} {display}\n"
+    for lang, data, percent in filtered:
+        yaml += f"  - {lang} {int(percent)}%\n"
 
         color = data["color"] or "#ccc"
         bar += f'        <stop offset="{start}%" stop-color="{color}" />\n'
