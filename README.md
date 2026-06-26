@@ -1,11 +1,12 @@
 ``` yaml
 Top languages:
-  - TypeScript 46%
+  - TypeScript 44%
   - Python 26%
   - CSS 12%
   - JavaScript 5%
-  - C++ 2%
+  - Rust 3%
   - Shell 2%
+  - C++ 2%
   - Lua 1%
 ```
 

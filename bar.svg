@@ -2,19 +2,21 @@
   <defs>
     <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%" stop-color="#3178c6" />
-        <stop offset="46.04504360818944%" stop-color="#3178c6" />
-        <stop offset="46.04504360818944%" stop-color="#3572A5" />
-        <stop offset="73.04420698010838%" stop-color="#3572A5" />
-        <stop offset="73.04420698010838%" stop-color="#663399" />
-        <stop offset="85.9359741680587%" stop-color="#663399" />
-        <stop offset="85.9359741680587%" stop-color="#f1e05a" />
-        <stop offset="91.4490454325423%" stop-color="#f1e05a" />
-        <stop offset="91.4490454325423%" stop-color="#f34b7d" />
-        <stop offset="94.08386427038475%" stop-color="#f34b7d" />
-        <stop offset="94.08386427038475%" stop-color="#89e051" />
-        <stop offset="96.70721095059416%" stop-color="#89e051" />
-        <stop offset="96.70721095059416%" stop-color="#000080" />
-        <stop offset="98.01825472107267%" stop-color="#000080" />
+        <stop offset="44.41202824078072%" stop-color="#3178c6" />
+        <stop offset="44.41202824078072%" stop-color="#3572A5" />
+        <stop offset="70.45364992659124%" stop-color="#3572A5" />
+        <stop offset="70.45364992659124%" stop-color="#663399" />
+        <stop offset="82.88820278089645%" stop-color="#663399" />
+        <stop offset="82.88820278089645%" stop-color="#f1e05a" />
+        <stop offset="88.20574963295621%" stop-color="#f1e05a" />
+        <stop offset="88.20574963295621%" stop-color="#dea584" />
+        <stop offset="91.51035819155368%" stop-color="#dea584" />
+        <stop offset="91.51035819155368%" stop-color="#89e051" />
+        <stop offset="94.28261831764401%" stop-color="#89e051" />
+        <stop offset="94.28261831764401%" stop-color="#f34b7d" />
+        <stop offset="96.82399170912859%" stop-color="#f34b7d" />
+        <stop offset="96.82399170912859%" stop-color="#000080" />
+        <stop offset="98.08853851800673%" stop-color="#000080" />
     </linearGradient>
   </defs>
   <rect x="0" y="0" width="100%" height="6px" fill="url(#gradient)" rx="1.5" />
