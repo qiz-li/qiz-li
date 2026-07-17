@@ -2,21 +2,21 @@
   <defs>
     <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%" stop-color="#3178c6" />
-        <stop offset="48.12162904514582%" stop-color="#3178c6" />
-        <stop offset="48.12162904514582%" stop-color="#3572A5" />
-        <stop offset="72.21559129045146%" stop-color="#3572A5" />
-        <stop offset="72.21559129045146%" stop-color="#663399" />
-        <stop offset="83.95050938873352%" stop-color="#663399" />
-        <stop offset="83.95050938873352%" stop-color="#f1e05a" />
-        <stop offset="88.94014682381143%" stop-color="#f1e05a" />
-        <stop offset="88.94014682381143%" stop-color="#dea584" />
-        <stop offset="91.99760287654814%" stop-color="#dea584" />
-        <stop offset="91.99760287654814%" stop-color="#89e051" />
-        <stop offset="94.56252497003595%" stop-color="#89e051" />
-        <stop offset="94.56252497003595%" stop-color="#f34b7d" />
-        <stop offset="96.9138284059129%" stop-color="#f34b7d" />
-        <stop offset="96.9138284059129%" stop-color="#000080" />
-        <stop offset="98.08379944067119%" stop-color="#000080" />
+        <stop offset="48.297465172878894%" stop-color="#3178c6" />
+        <stop offset="48.297465172878894%" stop-color="#3572A5" />
+        <stop offset="72.30976353890335%" stop-color="#3572A5" />
+        <stop offset="72.30976353890335%" stop-color="#663399" />
+        <stop offset="84.00490740141649%" stop-color="#663399" />
+        <stop offset="84.00490740141649%" stop-color="#f1e05a" />
+        <stop offset="88.97763300003486%" stop-color="#f1e05a" />
+        <stop offset="88.97763300003486%" stop-color="#dea584" />
+        <stop offset="92.02472613614307%" stop-color="#dea584" />
+        <stop offset="92.02472613614307%" stop-color="#89e051" />
+        <stop offset="94.58095470358998%" stop-color="#89e051" />
+        <stop offset="94.58095470358998%" stop-color="#f34b7d" />
+        <stop offset="96.92428865076324%" stop-color="#f34b7d" />
+        <stop offset="96.92428865076324%" stop-color="#000080" />
+        <stop offset="98.09029419523097%" stop-color="#000080" />
     </linearGradient>
   </defs>
   <rect x="0" y="0" width="100%" height="6px" fill="url(#gradient)" rx="1.5" />
